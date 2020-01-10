@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xsi:schemaLocation="http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans.xsd 
+http://www.springframework.org/schema/context 
+http://www.springframework.org/schema/context/spring-context.xsd 
+http://www.springframework.org/schema/tx 
+http://www.springframework.org/schema/tx/spring-tx.xsd" 
+xmlns:tx="http://www.springframework.org/schema/tx" 
+xmlns:context="http://www.springframework.org/schema/context" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns="http://www.springframework.org/schema/beans">
+
+	<context:component-scan base-package="au.com.wp.corp.integration" />
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:${properties.dir}/noah.properties</value>
+			</list>
+		</property>
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_FALLBACK" />
+	</bean>
+
+
+	<!--  POA Data Source  -->
+	<bean id="poaDatasource" class="oracle.jdbc.pool.OracleConnectionPoolDataSource"
+		destroy-method="close">
+		<property name="URL" value="${lidar.db.url}" />
+		<property name="user" value="${lidar.db.user.username}" />
+		<property name="password" value="${lidar.db.user.password}" />
+	</bean>
+	
+	<!-- define the SqlSessionFactory, notice that configLocation is not needed when you use MapperFactoryBean -->
+	<bean id="poaSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="poaDatasource" />
+		<property name="configLocation" value="classpath:poaMyBatisConfig.xml" />
+	</bean>
+
+	<!-- Creating TransactionManager Bean, since JDBC we are creating of type DataSourceTransactionManager  -->
+	<bean id="poaTansactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="poaDatasource" />
+	</bean>
+	
+	<!-- Mapper Factory Bean to intialize and register mappers -->
+	<bean id="pofAttributeMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="au.com.wp.corp.integration.noah.repository.mapper.POAMapperDao" />
+		<property name="sqlSessionFactory" ref="poaSqlSessionFactory" />
+	</bean>
+	<!-- Enable Annotation based Declarative Transaction Management -->
+	<tx:annotation-driven proxy-target-class="true" transaction-manager="poaTansactionManager" />
+	
+	
+	
+
+</beans>

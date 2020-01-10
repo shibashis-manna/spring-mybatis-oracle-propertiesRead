@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-config.dtd">		
+		
+<configuration>
+
+	<settings>
+		<setting name="lazyLoadingEnabled" value="false"/>
+	</settings>
+<!-- 
+	<typeAliases>
+		<typeAlias alias="getTest" type="au.com.wp.corp.integration.lidarCommon.model.SICalcResult"/>
+        <typeAlias alias="sICalcTransformedBay" type="au.com.wp.corp.integration.lidarCommon.model.SICalcTransformedBay"/>        
+         <typeAlias alias="sICalcCompleteAttributeSet" type="au.com.wp.corp.integration.lidarCommon.model.SICalcCompleteAttributeSet"/>
+	</typeAliases>
+	 -->
+	 <mappers>
+		<mapper resource="POAMapper.xml" />
+	</mappers> 
+
+</configuration>
